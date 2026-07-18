@@ -7,7 +7,7 @@ if (!fs.existsSync(DOWNLOAD_DIR)) fs.mkdirSync(DOWNLOAD_DIR);
 
 // ចម្លង Cookies ពី Secret File (Read-only) ទៅកន្លែងសរសេរបាន
 const SECRET_COOKIES_PATH = '/etc/secrets/cookies.txt';
-const WRITABLE_COOKIES_PATH = path.join(__dirname, 'cookies_runtime.txt');
+const WRITABLE_COOKIES_PATH = path.join(__dirname, 'cookies.txt');
 
 function ensureWritableCookies() {
   try {

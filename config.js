@@ -5,4 +5,5 @@ module.exports = {
   DOWNLOAD_TIMEOUT: 180000,         // 3 នាទី
   // ទុកទទេ = អនុញ្ញាតគ្រប់គ្នា, ឬដាក់ Chat ID ដើម្បីកំណត់
   ALLOWED_CHAT_IDS: [], // ឧទាហរណ៍: [123456789, -100987654321]
+MAX_REQUESTS_PER_USER_PER_HOUR: 5,
 };

@@ -32,6 +32,27 @@ function downloadMedia(url, type, onProgress) {
     const outputTemplate = path.join(DOWNLOAD_DIR, `${fileId}.%(ext)s`);
     const cookiesPath = ensureWritableCookies();
 
+    let args;
+    if (type === 'audio') {
+      args = [
+        ...(cookiesPath ? ['--cookies', cookiesPath] : []),
+        '--extractor-args', 'youtube:player_client=android,web;player-skip=webpage',
+        '-f', 'bestaudio',
+        '-x', '--audio-format', 'mp3', '--audio-quality', '0',
+        '-o', outputTemplate,
+        '--newline',
+        url,
+      ];
+    } else {
+      args = [
+        ...(cookiesPath ? ['--cookies', cookiesPath] : []),
+        '--extractor-args', 'youtube:player_client=android,web;player-skip=webpage',
+        '-f', 'best[filesize<45M]/best',
+        '-o', outputTemplate,
+        '--newline',
+        url,
+      ];
+    }
 
     const proc = spawn('yt-dlp', args);
     let lastPercent = -1;

@@ -1,4 +1,6 @@
+require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
+
 const fs = require('fs');
 const config = require('./config');
 const queue = require('./queue');
@@ -34,19 +36,14 @@ bot.on('message', async (msg) => {
   }
 
   const url = match[0];
-  const sentMsg = await bot.sendMessage(chatId, '🎬 ជ្រើសរើសទម្រង់ដែលអ្នកចង់ទាញយក៖', {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: '📹 វីដេអូ', callback_data: `dl:video:${sentMsg?.message_id ?? ''}` },
-          { text: '🎵 សំឡេង (MP3)', callback_data: `dl:audio:${sentMsg?.message_id ?? ''}` },
-        ],
-      ],
-    },
-  });
 
-  // ចងវាទៅនឹង message_id ពិតប្រាកដបន្ទាប់ពីផ្ញើរួច
+  // ជំហានទី ១: ផ្ញើសារធម្មតាសិន (គ្មានប៊ូតុង)
+  const sentMsg = await bot.sendMessage(chatId, '🎬 ជ្រើសរើសទម្រង់ដែលអ្នកចង់ទាញយក៖');
+
+  // ជំហានទី ២: ចងវាទៅនឹង message_id ដែលទទួលបានមកវិញ
   pendingLinks.set(sentMsg.message_id, url);
+
+  // ជំហានទី ៣: បន្ថែមប៊ូតុងចូលទៅសារនោះ
   await bot.editMessageReplyMarkup({
     inline_keyboard: [
       [

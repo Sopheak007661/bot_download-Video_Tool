@@ -5,6 +5,22 @@ const path = require('path');
 const DOWNLOAD_DIR = path.join(__dirname, 'downloads');
 if (!fs.existsSync(DOWNLOAD_DIR)) fs.mkdirSync(DOWNLOAD_DIR);
 
+// ចម្លង Cookies ពី Secret File (Read-only) ទៅកន្លែងសរសេរបាន
+const SECRET_COOKIES_PATH = '/etc/secrets/cookies.txt';
+const WRITABLE_COOKIES_PATH = path.join(__dirname, 'cookies_runtime.txt');
+
+function ensureWritableCookies() {
+  try {
+    if (fs.existsSync(SECRET_COOKIES_PATH)) {
+      fs.copyFileSync(SECRET_COOKIES_PATH, WRITABLE_COOKIES_PATH);
+      return WRITABLE_COOKIES_PATH;
+    }
+  } catch (err) {
+    console.error('Cookie copy failed:', err.message);
+  }
+  return null;
+}
+
 /**
  * @param {string} url - Link វីដេអូ
  * @param {'video'|'audio'} type - ប្រភេទឯកសារ
@@ -14,26 +30,27 @@ function downloadMedia(url, type, onProgress) {
   return new Promise((resolve, reject) => {
     const fileId = `${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     const outputTemplate = path.join(DOWNLOAD_DIR, `${fileId}.%(ext)s`);
+    const cookiesPath = ensureWritableCookies();
 
     let args;
     if (type === 'audio') {
-  args = [
-    '--cookies', '/etc/secrets/cookies.txt',
-    '-f', 'bestaudio',
-    '-x', '--audio-format', 'mp3', '--audio-quality', '0',
-    '-o', outputTemplate,
-    '--newline',
-    url,
-  ];
-} else {
-  args = [
-    '--cookies', '/etc/secrets/cookies.txt',
-    '-f', 'best[filesize<45M]/best',
-    '-o', outputTemplate,
-    '--newline',
-    url,
-  ];
-}
+      args = [
+        ...(cookiesPath ? ['--cookies', cookiesPath] : []),
+        '-f', 'bestaudio',
+        '-x', '--audio-format', 'mp3', '--audio-quality', '0',
+        '-o', outputTemplate,
+        '--newline',
+        url,
+      ];
+    } else {
+      args = [
+        ...(cookiesPath ? ['--cookies', cookiesPath] : []),
+        '-f', 'best[filesize<45M]/best',
+        '-o', outputTemplate,
+        '--newline',
+        url,
+      ];
+    }
 
     const proc = spawn('yt-dlp', args);
     let lastPercent = -1;

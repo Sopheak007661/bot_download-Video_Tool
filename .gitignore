@@ -1,3 +1,4 @@
 node_modules/
 .env
 downloads/
+cookies_runtime.txt

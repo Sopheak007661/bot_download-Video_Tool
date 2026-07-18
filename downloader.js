@@ -36,6 +36,7 @@ function downloadMedia(url, type, onProgress) {
     if (type === 'audio') {
       args = [
         ...(cookiesPath ? ['--cookies', cookiesPath] : []),
+        '--extractor-args', 'youtube:player_client=android,web;player-skip=webpage',
         '-f', 'bestaudio',
         '-x', '--audio-format', 'mp3', '--audio-quality', '0',
         '-o', outputTemplate,
@@ -45,6 +46,7 @@ function downloadMedia(url, type, onProgress) {
     } else {
       args = [
         ...(cookiesPath ? ['--cookies', cookiesPath] : []),
+        '--extractor-args', 'youtube:player_client=android,web;player-skip=webpage',
         '-f', 'best[filesize<45M]/best',
         '-o', outputTemplate,
         '--newline',

@@ -17,21 +17,23 @@ function downloadMedia(url, type, onProgress) {
 
     let args;
     if (type === 'audio') {
-      args = [
-        '-f', 'bestaudio',
-        '-x', '--audio-format', 'mp3', '--audio-quality', '0',
-        '-o', outputTemplate,
-        '--newline',
-        url,
-      ];
-    } else {
-      args = [
-        '-f', 'best[filesize<45M]/best',
-        '-o', outputTemplate,
-        '--newline',
-        url,
-      ];
-    }
+  args = [
+    '--cookies', '/etc/secrets/cookies.txt',
+    '-f', 'bestaudio',
+    '-x', '--audio-format', 'mp3', '--audio-quality', '0',
+    '-o', outputTemplate,
+    '--newline',
+    url,
+  ];
+} else {
+  args = [
+    '--cookies', '/etc/secrets/cookies.txt',
+    '-f', 'best[filesize<45M]/best',
+    '-o', outputTemplate,
+    '--newline',
+    url,
+  ];
+}
 
     const proc = spawn('yt-dlp', args);
     let lastPercent = -1;
